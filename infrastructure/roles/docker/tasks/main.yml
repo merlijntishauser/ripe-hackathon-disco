@@ -1,0 +1,42 @@
+- name: remove docker.io
+  apt: name=docker.io state=absent
+
+- name: install AUFS support
+  apt: pkg=linux-image-extra-{{ ansible_kernel }}
+
+- name: install required packages
+  apt: name={{ item }}
+  with_items:
+    - python-boto
+    - python-pip
+
+- name: make sure pip is properly installed
+  easy_install: name=pip
+
+- name: add Docker GPG key
+  apt_key: id=A88D21E9 url="http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x36A1D7869245C8950F966E92D8576A8BA88D21E9"
+
+- name: add Docker repository
+  apt_repository: repo="deb https://get.docker.com/ubuntu docker main"
+
+- name: force apt-get update
+  apt: update_cache=yes
+
+- name: install Docker
+  apt: pkg=lxc-docker
+
+- name: configure UFW for Docker
+  lineinfile: dest=/etc/default/ufw regexp=^DEFAULT_FORWARD_POLICY line=DEFAULT_FORWARD_POLICY=\"ACCEPT\"
+  notify:
+    - restart ufw
+
+- name: add docker group
+  group: name=docker
+  notify:
+    - restart docker
+
+- name: add user to docker group
+  user: name={{ ansible_ssh_user }} append=yes groups=docker
+
+- name: install docker python
+  pip: name=docker-py

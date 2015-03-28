@@ -1,0 +1,15 @@
+- hosts: webserver
+  sudo: yes
+  roles:
+    - {role: base, tags: ['base']}
+    - {role: developer_access, tags: ['developer_access']}
+    - {role: docker, tags: ['docker']}
+#    - {role: nginx, tags: ['nginx']}
+
+- hosts: elastic
+  sudo: yes
+  roles:
+    - {role: base, tags: ['base']}
+    - {role: developer_access, tags: ['developer_access']}
+    - {role: docker, tags: ['docker']}
+
