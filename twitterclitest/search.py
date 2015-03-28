@@ -23,7 +23,8 @@ def main():
 
     api = tweepy.API(auth)
     for status in tweepy.Cursor(api.search, geocode='52.3747157,4.898614,20km',since='2015-03-27',until='2015-03-28').items():
-        print status,'\n\n'
+        print status._json,'\n\n'
+        break
 
 if __name__ == "__main__":
     main()
