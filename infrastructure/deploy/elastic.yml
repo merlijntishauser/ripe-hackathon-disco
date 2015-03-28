@@ -1,0 +1,112 @@
+- hosts: elastic
+  sudo: yes
+  serial: 1
+  vars:
+    - application_name: "elastic"
+  tasks:
+    - include_vars: ../group_vars/global.yml
+
+    - name: check elasticsearch is running and create an index with document
+      command: "curl -XPUT 'localhost:9200/testindex' -d '{\"settings\": {\"index\": {\"number_of_shards\": 1, \"number_of_replicas\": 1}}}'"
+      register: elastic_available
+      ignore_errors: True
+
+    - name: add document to elasticsearch if available
+      command: "curl -XPUT 'localhost:9200/testindex/external/1' -d '{\"name\": \"John Doe\"}'"
+      when: elastic_available|success
+
+    - name: flush elasticsearch indices
+      command: "curl -XPOST 'localhost:9200/_flush'"
+      when: elastic_available|success
+
+    - name: pull latest Docker image
+      shell: "docker pull merlijntishauser/elasticsearch:latest"
+
+    - name: disable shard allocation
+      command: "curl -XPUT localhost:9200/_cluster/settings -d '{\"transient\":{\"cluster.routing.allocation.disable_allocation\": true}}'"
+      when: elastic_available|success
+
+    - name: bring down old docker container
+      docker: name=elastic state=absent image=elastic
+
+#    - name: remove instance from loadbalancer
+#      ec2_elb:
+#        ec2_elbs={{ elastic_elb_name }}
+#        instance_id={{ instance_id }}
+#        state=absent
+#        region="{{ aws.region }}"
+#        aws_access_key="{{ aws.access_key }}"
+#        aws_secret_key="{{ aws.secret_key }}"
+
+    - name: create persistent storage directory
+      file: dest=/persistent_storage/elasticsearch state=directory recurse=true mode=777
+
+    - name: create subdirectories within persistent storage directory
+      file: dest=/persistent_storage/elasticsearch/{{ item }} state=directory recurse=true mode=777
+      with_items:
+        - data
+        - log
+        - config
+
+    - name: copy elasticsearch configuration file
+      template: src=templates/elasticsearch/elasticsearch.yml.j2 dest=/persistent_storage/elasticsearch/config/elasticsearch.yml
+
+    - name: copy logging configuration file for elasticsearch
+      template: src=templates/elasticsearch/logging.yml.j2 dest=/persistent_storage/elasticsearch/config/logging.yml
+
+    # assume we have pulled the image with the correct hash in the previous step
+    # if not, this will fail. But we prefer a failing build above testing
+    # against a implicit assumption of the correct docker image id
+    - name: start new Docker image
+      docker:
+        image=merlijntishauser/elasticsearch:latest
+        name='elastic'
+        hostname="{{ inventory_hostname_short }}-container"
+        command="/elasticsearch/bin/elasticsearch -Des.config=/data/config/elasticsearch.yml"
+        volumes="/persistent_storage/elasticsearch/config:/data/config,/persistent_storage/elasticsearch/log:/data/log,/persistent_storage/elasticsearch/data:/data/data"
+        ports="9200:9200,9300:9300"
+        state=running
+
+    - name: wait for elastic to be up and running
+      shell: "curl http://localhost:9200"
+      register: result
+      until: result.stdout.find("You Know, for Search") != -1
+      retries: 10
+      delay: 3
+      changed_when: False
+
+    - name: wait for elasticsearch cluster status to be yellow/green
+      shell: "curl http://localhost:9200/_cluster/health"
+      register: clusterresult
+      until: clusterresult.stdout.find("yellow") != -1 or clusterresult.stdout.find("green") != -1
+      retries: 10
+      delay: 5
+      changed_when: False
+
+    - name: enable shard allocation
+      command: "curl -XPUT localhost:9200/_cluster/settings -d '{\"transient\":{\"cluster.routing.allocation.disable_allocation\": false}}'"
+
+    - name: refresh elasticsearch indices
+      command: "curl -XPOST 'localhost:9200/_refresh'"
+      when: elastic_available|success
+
+    - name: search for entry in elasticsearch
+      command: "curl -XGET 'localhost:9200/testindex/external/1'"
+      register: elastic_searchresult
+      failed_when: elastic_searchresult.stdout.find("John Doe") < 1
+      when: elastic_available|success
+
+    - name: remove testindex from elasticsearch if available
+      command: "curl -XDELETE 'localhost:9200/testindex'"
+      when: elastic_available|success
+
+
+#    - name: Add instance to loadbalancer
+#      ec2_elb:
+#        ec2_elbs={{ elastic_elb_name }}
+#        instance_id={{ instance_id }}
+#        state=present
+#        region="{{ aws.region }}"
+#        aws_access_key="{{ aws.access_key }}"
+#        aws_secret_key="{{ aws.secret_key }}"
+

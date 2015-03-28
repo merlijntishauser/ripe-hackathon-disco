@@ -1,0 +1,10 @@
+users:
+    - name: merlijn
+      pub_key:
+      - public_keys/merlijn.pub
+    - name: igor
+      pub_key:
+      - public_keys/igor.pub
+    - name: anna
+      pub_key:
+      - public_keys/anna.pub

@@ -1,0 +1,5 @@
+elastic:
+  cluster_name: ripe-hackathon-disco
+  heapsize: 1536m
+  docker:
+    memory_limit: 2GB

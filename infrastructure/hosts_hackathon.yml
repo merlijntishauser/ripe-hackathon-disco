@@ -1,0 +1,8 @@
+[all:vars]
+ansible_ssh_user=ubuntu
+
+[webserver]
+www ansible_ssh_host=52.16.114.123 instance_id=i-76b8c391
+
+[elastic]
+elastic ansible_ssh_host=52.16.250.194 instance_id=i-aeb1ca49
