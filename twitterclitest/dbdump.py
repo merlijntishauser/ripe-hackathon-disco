@@ -36,7 +36,7 @@ def main():
     
         page = 1
         while True:
-            statuses = api.search(q=kv,geocode='52.3747157,4.898614,20km',count=10,since='2015-03-27',until='2015-03-28', page=page)
+            statuses = api.search(q=kv,geocode='52.3747157,4.898614,20km',count=100,since='2015-03-27',until='2015-03-28', page=page)
             print datetime.now(),page,kv,len(statuses)
             if statuses:
                 for status in statuses:
@@ -44,7 +44,7 @@ def main():
             else:
                 # All done
                 break
-        page += 1  # next page
+            page += 1  # next page
 
         # now sleep for the window so we don't hit the rate limit
         time.sleep(15*60)
