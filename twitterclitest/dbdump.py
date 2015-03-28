@@ -31,20 +31,11 @@ def main():
     api = tweepy.API(auth)
 
     # fetch app keywords
-    for kv in keywords:        
+    for kv in keywords:
+        print kv,datetime.now()
         es = Elasticsearch([ES_HOST])
-    
-        page = 1
-        while True:
-            statuses = api.search(q=kv,geocode='52.3747157,4.898614,20km',count=100,since='2015-03-27',until='2015-03-28', page=page)
-            print datetime.now(),page,kv,len(statuses)
-            if statuses:
-                for status in statuses:
-                    res = es.index(index=ES_INDEX, doc_type='tweet', body=status)
-            else:
-                # All done
-                break
-            page += 1  # next page
+        for status in tweepy.Cursor(api.search, geocode='52.3747157,4.898614,20km',since='2015-03-27',until='2015-03-28').items():
+            res = es.index(index=ES_INDEX, doc_type='tweet', body=status)
 
         # now sleep for the window so we don't hit the rate limit
         time.sleep(15*60)

@@ -22,23 +22,8 @@ def main():
     auth.set_access_token(access_token, access_token_secret)
 
     api = tweepy.API(auth)
-    statuses = api.search(q='outage',geocode='52.3747157,4.898614,20km',count=10,since='2015-03-27',until='2015-03-28')
-    if statuses:
-        for status in statuses:
-            print status
-
-    
-#    page = 1
-#    while True:
-#        statuses = api.search(q='outage',geocode='52.3747157%2C4.898614%2C20km',count=10,since='2015-03-27',until='2015-03-28')
-#        if statuses:
-#            for status in statuses:
-#                print status
-#        else:
-#            # All done
-#            break
-#        break
-#        page += 1  # next page
+    for status in tweepy.Cursor(api.search, geocode='52.3747157,4.898614,20km',since='2015-03-27',until='2015-03-28').items():
+        print status,'\n\n'
 
 if __name__ == "__main__":
     main()
