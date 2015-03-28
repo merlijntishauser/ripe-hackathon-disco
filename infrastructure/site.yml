@@ -3,8 +3,8 @@
   roles:
     - {role: base, tags: ['base']}
     - {role: developer_access, tags: ['developer_access']}
-    - {role: docker, tags: ['docker']}
-#    - {role: nginx, tags: ['nginx']}
+    - {role: nginx,
+      nginx_http_params: ["tcp_nodelay on", "error_log /var/log/nginx/error.log"]}
 
 - hosts: elastic
   sudo: yes
