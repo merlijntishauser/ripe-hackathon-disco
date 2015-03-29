@@ -17,8 +17,6 @@
     <script src="js/streamConnection.js"></script>
     <script src="js/mainView.js"></script>
     <script src="js/webgl-heatmap.js"></script>
-      <script src="js/jquery.ticker.js"></script>
-      <script src="js/site.js"></script>
     <script src="js/webgl-heatmap-leaflet.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -45,13 +43,6 @@
                     <div id="map" style="height:500px;width:100%;"></div>
                     <br>
                     <a href="" id="locate_me" class="btn btn-primary"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Go to my location</a>
-                    <br />
-                    <ul id="js-news" class="js-hidden">
-                        <li class="news-item"><a href="#">This is the 1st latest news item.</a></li>
-                        <li class="news-item"><a href="#">This is the 2nd latest news item.</a></li>
-                        <li class="news-item"><a href="#">This is the 3rd latest news item.</a></li>
-                        <li class="news-item"><a href="#">This is the 4th latest news item.</a></li>
-                    </ul>
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default">
@@ -59,6 +50,16 @@
                             <h3 class="panel-title"><img src="img/twitter.png" /> Popular Twitter keywords in the area</h3>
                         </div>
                         <div class="panel-body" id="trending" style="font-size: 17px;">
+                            <a href="https://twitter.com/search?q=%23PowerOutage" target="_BLANK"><span class="label label-info">#PowerOutage</span></a>
+                            <a href="https://twitter.com/search?q=storing" target="_BLANK"><span class="label label-info">storing</span></a>
+                            <a href="https://twitter.com/search?q=%23stroomstoring" target="_BLANK"><span class="label label-info">#stroomstoring</span></a>
+                            <a href="https://twitter.com/search?q=verkeer" target="_BLANK"><span class="label label-info">verkeer</span></a>
+                            <a href="https://twitter.com/search?q=treinverkeer" target="_BLANK"><span class="label label-info">treinverkeer</span></a>
+                            <a href="https://twitter.com/search?q=oorzaak" target="_BLANK"><span class="label label-info">oorzaak</span></a>
+                            <a href="https://twitter.com/search?q=%23NS" target="_BLANK"><span class="label label-info">#NS</span></a>
+                            <a href="https://twitter.com/search?q=kortsluiting" target="_BLANK"><span class="label label-info">kortsluiting</span></a>
+                            <a href="https://twitter.com/search?q=vluchtschema" target="_BLANK"><span class="label label-info">vluchtschema</span></a>
+                            <a href="https://twitter.com/search?q=Diemen" target="_BLANK"><span class="label label-info">Diemen</span></a>
                         </div>
                     </div>
                     <div class="panel panel-default">
