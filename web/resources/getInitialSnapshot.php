@@ -8,12 +8,11 @@
 	foreach ($data as $key => $value) {
 		if($value['event'] == 'disconnect') {
 			$probe = array();
-			$probe['id'] = $value['prb_id'];
+			$probe['id']        = $value['prb_id'];
 			$probe['intensity'] = 1-((time()-$value['timestamp'])*0.00055);
 			array_push($probes, $probe);
 		}
 	}
-	var_dump($probes);
-	file_put_contents("snapshot.json", json_encode($probes));
 
-?>
+    file_put_contents(realpath(dirname(__FILE__)) . "/snapshot.json", json_encode($probes));
+

@@ -17,6 +17,8 @@
     <script src="js/streamConnection.js"></script>
     <script src="js/mainView.js"></script>
     <script src="js/webgl-heatmap.js"></script>
+      <script src="js/jquery.ticker.js"></script>
+      <script src="js/site.js"></script>
     <script src="js/webgl-heatmap-leaflet.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -41,6 +43,13 @@
             <div class="row">
                 <div class="col-md-8">
                     <div id="map" style="height:500px;width:100%;"></div>
+                    <br />
+                    <ul id="js-news" class="js-hidden">
+                        <li class="news-item"><a href="#">This is the 1st latest news item.</a></li>
+                        <li class="news-item"><a href="#">This is the 2nd latest news item.</a></li>
+                        <li class="news-item"><a href="#">This is the 3rd latest news item.</a></li>
+                        <li class="news-item"><a href="#">This is the 4th latest news item.</a></li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default">
@@ -48,7 +57,7 @@
                             <h3 class="panel-title"><img src="img/twitter.png" /> Popular Twitter keywords in the area</h3>
                         </div>
                         <div class="panel-body" id="trending">
-                        
+
                         </div>
                     </div>
                     <div class="panel panel-default">
