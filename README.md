@@ -1,7 +1,7 @@
 # ripe-hackathon-disco
-POC for hackathon
+At the april 2015 RIPE Hackathon (the first one?!) this project was created. The aim of the project is to show realtime internet outages as a heatmap. This map should be enriched with 3rd party data, esp. Twitter trending topics.
 
-just a readme, fill me
+The presentation can be found zipped in the presentation directory. It probably gives more background information. We hate writing readme's ;)
 
 Trello Board
 ==========================
