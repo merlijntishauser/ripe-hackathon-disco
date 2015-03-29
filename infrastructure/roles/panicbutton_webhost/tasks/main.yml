@@ -1,3 +1,6 @@
 ---
-- name: create webdirectory for panicbutton
-  file: dest=/usr/share/nginx/panicbutton state=directory recurse=true mode=755
+- include: nodejs.yml
+- include: webroot.yml
+- include: cron.yml
+
+

@@ -1,0 +1,17 @@
+{
+    "name": "weathertest",
+    "version": "1.0.0",
+    "description": "rest backend for disco",
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.12.3",
+        "twitter": "^1.2.5",
+        "yql": "^1.0.2",
+        "underscore" : "latest",
+        "debug" : "latest",
+        "body-parser" : "latest",
+        "elasticsearch" : "latest",
+        "geocoder" : "latest"
+    }
+}

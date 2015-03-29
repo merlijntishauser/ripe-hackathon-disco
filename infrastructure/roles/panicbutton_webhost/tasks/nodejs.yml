@@ -1,0 +1,13 @@
+- name: install nodejs packages
+  apt: name={{ item }} state=present
+  with_items:
+    - nodejs
+    - npm
+
+- name: symlink /usr/local/bin/node to /usr/bin/nodejs
+  file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
+
+- name: update node package manager (npm)
+  npm:  name={{ item }} state=latest global=yes
+  with_items:
+    - npm
