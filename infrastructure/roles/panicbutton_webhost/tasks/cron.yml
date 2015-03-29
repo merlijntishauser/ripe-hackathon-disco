@@ -1,0 +1,5 @@
+- name: create cronjob for getting probelocations
+  cron: name="get probe locations" special_time="daily" job="php /usr/share/nginx/panicbutton/resources/refreshProbeLocationData.php"
+
+- name: create cronjob for getting snapshots
+  cron: name="get 5m snapshotsr" minute="*/5" job="php /usr/share/nginx/panicbutton/resources/getInitialSnapshot.php"

@@ -13,7 +13,5 @@
 			array_push($probes, $probe);
 		}
 	}
-	var_dump($probes);
-	file_put_contents("snapshot.json", json_encode($probes));
 
-?>
+	file_put_contents(realpath(dirname(__FILE__)) . "/snapshot.json", json_encode($probes));

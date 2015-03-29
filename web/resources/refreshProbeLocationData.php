@@ -10,6 +10,5 @@
 		$probe['lat'] = $value['latitude'];
 		$probes[(int)$value['id']] = $probe;
 	}
-	file_put_contents("locations.json", json_encode($probes));
 
-?>
+    file_put_contents(realpath(dirname(__FILE__)) . "/locations.json", json_encode($probes));
