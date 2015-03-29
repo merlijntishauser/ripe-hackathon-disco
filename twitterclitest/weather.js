@@ -7,8 +7,8 @@
     var updatetweets = function(loc) {        
         console.log(loc);
         $.ajax({
-            url: 'http://127.0.0.1:3000/trending?lat='+loc.lat+'&lng='+loc.lng,
-//            url: 'http://127.0.0.1:3000/trending?country=NL',
+//            url: 'http://127.0.0.1:3000/trending?lat='+loc.lat+'&lng='+loc.lng,
+            url: 'http://push.thepanicbutton.nl/trending?lat='+loc.lat+'&lng='+loc.lng,
             success : function(res) {
                 console.log(res);
             }
