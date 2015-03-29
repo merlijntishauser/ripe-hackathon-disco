@@ -1,7 +1,7 @@
 <?php
 
 $query = $_GET['lat']."%2C".$_GET['lon'];
-$url ="http://api.worldweatheronline.com/free/v2/weather.ashx?q=".$query."&format=json&num_of_days=0&fx=no&fx24=yes&includelocation=yes&show_comments=no&tp=3&key=71283c1cef2745eb18f02d9e0c331";
+$url ="http://api.worldweatheronline.com/free/v2/weather.ashx?q=".$query."&format=json&num_of_days=0&fx=no&fx24=yes&includelocation=yes&show_comments=no&tp=3&key=SECRETKEY";
 
 $data = file_get_contents($url);
 $data = json_decode($data, true);
