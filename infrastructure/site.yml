@@ -3,8 +3,23 @@
   roles:
     - {role: base, tags: ['base']}
     - {role: developer_access, tags: ['developer_access']}
-    - {role: nginx,
-      nginx_http_params: ["tcp_nodelay on", "error_log /var/log/nginx/error.log"]}
+    - {role: panicbutton_webhost, tags: ['panicbutton_webhost']}
+    - role: nginx
+      nginx_http_params:
+        - sendfile on
+        - access_log /var/log/nginx/access.log
+        - error_log /var/log/nginx/error.log
+      nginx_sites:
+        panicbutton:
+          - listen 80
+          - server_name push.thepanicbutton.nl
+          - root /usr/share/nginx/panicbutton
+          - location / { try_files $uri $uri/ /index.html; }
+      nginx_configs:
+         gzip:
+          - gzip on
+          - gzip_disable msie6
+      tags: ['nginx']
 
 - hosts: elastic
   sudo: yes

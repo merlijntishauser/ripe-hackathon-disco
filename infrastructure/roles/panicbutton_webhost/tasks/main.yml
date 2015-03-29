@@ -1,0 +1,3 @@
+---
+- name: create webdirectory for panicbutton
+  file: dest=/usr/share/nginx/panicbutton state=directory recurse=true mode=755
