@@ -17,6 +17,14 @@
           - root /usr/share/nginx/panicbutton
           - index index.php index.html index.htm
           - location / {try_files $uri $uri/ /index.php;}
+          - location /node {
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header Host $http_host;
+              proxy_set_header X-NginX-Proxy true;
+              proxy_pass http://localhost:3000/;
+              proxy_redirect off;
+            }
           - location ~ \.php$ {try_files $uri $uri/ /index.php; fastcgi_pass php; fastcgi_index index.php; fastcgi_split_path_info ^(.+\.php)(/.*)$; include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; fastcgi_param HTTPS off;}
       nginx_configs:
          upstream:
