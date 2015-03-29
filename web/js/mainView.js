@@ -8,7 +8,7 @@ var PageView = function (streamManager) {
     var that = this;
 
     function createMap() {
-        map = L.map('map').setView([0, 0], 2);
+        map = L.map('map').setView([52.3740300, 4.8896900], 8);
         var popup = L.popup();
 
         // add an OpenStreetMap tile layer
@@ -47,6 +47,14 @@ var PageView = function (streamManager) {
             $('#weather_windspeed').html(data["wind_speed"]);
             $('#weather_location').html(data["location"]);
         });
+
+        //http://push.thepanicbutton.nl:3000/trending?lat=52.382306&long=4.899902
+        var result = $.getJSON( "http://push.thepanicbutton.nl:3000/trending", {lat: center['lat'], lng: center['lng']}, function(data) {
+            $("#trending").html("");
+            data[0].trends.forEach(function(t) {
+                $("#trending").append('<a href="'+t.url+'" target="_BLANK"><span class="label label-info">'+t.name+'</span></a> ');
+            });
+        });
     };
 
     this.importSnapshot = function (locations) {
@@ -64,6 +72,7 @@ var PageView = function (streamManager) {
         this.initCooldown(1000);
         map.on('viewreset', this.updateMap);
         map.on('dragend', this.updateMap);
+        this.updateMap();
     };
 
     this.initCooldown = function (delay) {

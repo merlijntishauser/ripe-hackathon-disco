@@ -47,8 +47,8 @@
                         <div class="panel-heading">
                             <h3 class="panel-title"><img src="img/twitter.png" /> Popular Twitter keywords in the area</h3>
                         </div>
-                        <div class="panel-body">
-                            Panel content
+                        <div class="panel-body" id="trending">
+                        
                         </div>
                     </div>
                     <div class="panel panel-default">
