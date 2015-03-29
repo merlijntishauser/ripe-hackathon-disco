@@ -11,6 +11,7 @@
         "underscore" : "latest",
         "debug" : "latest",
         "body-parser" : "latest",
-        "elasticsearch" : "latest"
+        "elasticsearch" : "latest",
+        "geocoder" : "latest"
     }
 }

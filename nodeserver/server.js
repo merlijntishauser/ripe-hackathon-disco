@@ -4,6 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var es = require('elasticsearch');
 var Twitter = require('twitter');
+var geocoder = require('geocoder');
 
 // configs in env
 var esip = process.env.ES_HOST || 'elastic.thepanicbutton.nl';
@@ -68,83 +69,79 @@ app.use(function(err, req, res, next) {
 
 app.all('/trending', function(req, res) {
     debug(req.query);
-    var place = { woeid : 1, name : "World" };
-    if (req.query.country) {    
-        place = getwoeid(req.query.country);
-        console.log(place);
-    }
     
     var handleerr = function(err) {
         res.status(500).send({ error: "internal server error",
 			       details: err});
         return;
     }
-    
-    esclient.get({
-        index: 'trending-index',
-        type: 'trends',
-        id: place.woeid
-    }, function (error, response) {
-        console.log(response);
 
-        var ts = Date.now();
-        if (!response || response.error || !response.found || (ts - response._source.queryts) > 5*60*1000) {
-            // get/refresh trending topics
-            twclient.get('trends/place', {id: place.woeid}, function(error, trends, response) {
-                if (error) return handlerr(error);
-                
-                console.log(trends);
-                
-                // cache to elastic search
-                esclient.create({
-                    index: 'trending-index',
-                    type: 'trends',
-                    id: place.woeid,
-                    body: {
-                        place : place,
-                        trends : trends,
-                        queryts : ts
-                    }
-                }, function (error, response) {
-                    if (error) console.error(error);
-                });
-                
-                res.status(200).send(trends);
+    geocoder.reverseGeocode( req.query.lat, req.query.lng, function ( err, data ) {
+        var place = { woeid : 1, name : "World" }; // default
+        if (!err && data && data.results && data.results.length > 0) {
+            var country = _.find(data.results[0].address_components, function(c) {
+                console.log(c);
+                return _.contains(c.types, 'country');
             });
-        } else {
-            // send cached topics
-            res.status(200).send(response._source.trends);
-        }
-    });    
-});
-
-/*
-app.all('/trending', function(req, res) {
-    debug(req.query);
-
-    twclient.get('geo/reverse_geocode', {lat: req.query.lat, long : req.query.lng}, function(error, obj, response) {
-        if (error) {
-            res.status(500).send({ error: "internal server error",
-			           details: error});
-            return;
+            if (country) {
+                place = getwoeid(country.short_name) || place;
+            }
         }
         
-        var place = obj.result.places[0];
-        place.woeid = getwoeid(place.country_code).woeid;
-        console.log(place);
-           
-        twclient.get('trends/place', {id: place.woeid}, function(error, trends, response) {
-            if (error) {
-                res.status(500).send({ error: "internal server error",
-			               details: error});
-                return;
+        esclient.get({
+            index: 'trending-index',
+            type: 'trends',
+            id: place.woeid
+        }, function (error, response) {
+            console.log(response);
+
+            var ts = Date.now();
+            if (!response || response.error || !response.found || (ts - response._source.queryts) > 5*60*1000) {
+                // get/refresh trending topics
+                twclient.get('trends/place', {id: place.woeid}, function(error, trends, resp) {
+                    if (error) return handlerr(error);
+                    
+                    console.log(trends);
+
+                    if (response.found) {
+                        esclient.update({
+                            index: 'trending-index',
+                            type: 'trends',
+                            id: place.woeid,
+                            body: {
+                                doc: {
+                                    trends: trends,
+                                    queryts : ts
+                                }
+                            }
+                        }, function (error, response) {
+                            if (error) console.error(error);
+                        });
+                    } else {                    
+                        // cache to elastic search
+                        esclient.create({
+                            index: 'trending-index',
+                            type: 'trends',
+                            id: place.woeid,
+                            body: {
+                                place : place,
+                                trends : trends,
+                                queryts : ts
+                            }
+                        }, function (error, response) {
+                            if (error) console.error(error);
+                        });
+                    }
+                    
+                    res.status(200).send(trends);
+                });
+            } else {
+                // send cached topics
+                res.status(200).send(response._source.trends);
             }
-            console.log(trends);
-            res.status(200).send(trends);
         });
-    });    
+    });
 });
-*/
 
 // just forward the query to the es rest API
 app.all('/essearch/:idx', function(req, res) {
