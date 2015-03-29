@@ -1,4 +1,7 @@
 users:
+    - name: deploy
+      pub_key:
+      - public_keys/deploy.pub
     - name: merlijn
       pub_key:
       - public_keys/merlijn.pub

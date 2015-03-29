@@ -15,12 +15,16 @@
           - listen 80
           - server_name push.thepanicbutton.nl
           - root /usr/share/nginx/panicbutton
-          - index index.php
-          - location / {try_files $uri $uri/ /index.php; fastcgi_index index.php; fastcgi_pass unix:/var/run/php5-fpm.sock; fastcgi_split_path_info ^(.+\.php)(/.*)$; include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; fastcgi_param HTTPS off;}
+          - index index.php index.html index.htm
+          - location / {try_files $uri $uri/ /index.php;}
+          - location ~ \.php$ {try_files $uri $uri/ /index.php; fastcgi_pass php; fastcgi_index index.php; fastcgi_split_path_info ^(.+\.php)(/.*)$; include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; fastcgi_param HTTPS off;}
       nginx_configs:
+         upstream:
+          - upstream php {server unix:/var/run/php5-fpm.sock; }
          gzip:
           - gzip on
           - gzip_disable msie6
+          - gzip_types text/plain application/xml text/css text/js text/xml application/x-javascript text/javascript application/javascript application/json    application/xml+rss
       tags: ['nginx']
 
 - hosts: elastic
@@ -29,4 +33,3 @@
     - {role: base, tags: ['base']}
     - {role: developer_access, tags: ['developer_access']}
     - {role: docker, tags: ['docker']}
-
