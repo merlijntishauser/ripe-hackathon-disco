@@ -5,6 +5,7 @@
     - git
     - build-essential
     - curl
+    - acl
 
 - name: install nl_NL.UTF-8 locale
   shell: locale-gen nl_NL.UTF-8

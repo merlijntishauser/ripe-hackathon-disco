@@ -4,6 +4,7 @@
     - {role: base, tags: ['base']}
     - {role: developer_access, tags: ['developer_access']}
     - {role: panicbutton_webhost, tags: ['panicbutton_webhost']}
+    - {role: php, tags: ['php']}
     - role: nginx
       nginx_http_params:
         - sendfile on

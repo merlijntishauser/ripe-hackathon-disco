@@ -1,0 +1,24 @@
+---
+  - name: install packages
+    apt: pkg={{ item }} state=installed
+    with_items:
+      - php5-cli
+      - php5-fpm
+      - php5-gd
+      - php5-intl
+      - php5-mysql
+      - php5-apcu
+      - php5-redis
+      - php5-curl
+
+  - name: set correct PHP timezone in fpm
+    lineinfile: dest=/etc/php5/fpm/php.ini regexp='^date.timezone\s?=' line='date.timezone = "Europe/Amsterdam"' state=present
+
+  - name: update memory limit in fpm
+    lineinfile: dest=/etc/php5/fpm/php.ini regexp='^memory_limit\s?=' line='memory_limit = 512M' state=present
+
+  - name: set correct PHP timezone in cli
+    lineinfile: dest=/etc/php5/cli/php.ini regexp='^date.timezone\s?=' line='date.timezone = "Europe/Amsterdam"' state=present
+
+  - name: update memory limit in cli
+    lineinfile: dest=/etc/php5/cli/php.ini regexp='^memory_limit\s?=' line='memory_limit = 512M' state=present
