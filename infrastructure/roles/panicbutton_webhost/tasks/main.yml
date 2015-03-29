@@ -1,3 +1,17 @@
 ---
+- include: nodejs.yml
+
 - name: create webdirectory for panicbutton
-  file: dest=/usr/share/nginx/panicbutton state=directory recurse=true mode=755
+  file: dest=/usr/share/nginx state=directory recurse=true mode=755
+
+- name: create sourcedirectory for panicbutton
+  file: dest=/home/deploy/panicbutton state=directory recurse=true mode=755
+
+- name: copy the web directory to nginx siteroot
+  copy: src=../web/
+        dest=/usr/share/nginx/panicbutton
+
+- name: set permisions
+  file: dest=/usr/share/nginx/panicbutton mode=766 state=directory  recurse=true owner=www-data group=www-data
+
+#- name: create cron job
