@@ -56,7 +56,7 @@ L.TileLayer.WebGLHeatMap = L.Class.extend({
     	$.each(this.data, function(key, val) {
     		self.data[key][2] = val[2]-opts.cooldownPerSecond;
     		if(val[2] <= 0) {
-    			delete self.data[key];
+    			self.data.splice(key, 1);
     		}
     	});
     },
@@ -64,8 +64,8 @@ L.TileLayer.WebGLHeatMap = L.Class.extend({
     onRemove: function (map) {
        	map.getPanes().overlayPane.removeChild(this.canvas);
        	map.off("move", this._plot, this);
-	map.off("zoomstart", this._hide, this);
-	map.off("zoomend", this._show, this);
+		map.off("zoomstart", this._hide, this);
+		map.off("zoomend", this._show, this);
     },
 	
     _hide : function () {
