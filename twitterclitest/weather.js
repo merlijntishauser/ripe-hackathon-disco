@@ -8,9 +8,13 @@
         console.log(loc);
         $.ajax({
 //            url: 'http://127.0.0.1:3000/trending?lat='+loc.lat+'&lng='+loc.lng,
-            url: 'http://push.thepanicbutton.nl/trending?lat='+loc.lat+'&lng='+loc.lng,
+            url: 'http://push.thepanicbutton.nl:3000/trending?lat='+loc.lat+'&lng='+loc.lng,
             success : function(res) {
-                console.log(res);
+                $('#tweetlist').empty();
+                res[0].trends.forEach(function(t) {
+                    console.log(t);
+                    $("#tweetlist").append('<li><a href="'+t.url+'">'+t.name+'</a></li>');
+                });
             }
         });
     }
