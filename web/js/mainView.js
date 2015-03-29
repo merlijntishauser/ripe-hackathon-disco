@@ -12,8 +12,9 @@ var PageView = function (streamManager) {
         var popup = L.popup();
 
         // add an OpenStreetMap tile layer
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+            maxZoom: 16
         }).addTo(map);
 
         //custom size for this example, and autoresize because map style has a percentage width
@@ -36,7 +37,26 @@ var PageView = function (streamManager) {
         }
     };
 
+    this.importSnapshot = function (locations) {
+        var locs;
+        while(locs === undefined) {
+            var locs = pr.locations;
+        }
+        $.each(locations, function(key, val) {
+            console.log(val);
+            heatmap.addDataPoint(locs[val['id']]['lat'], locs[val['id']]['long'], val['intensity']*100);
+        });
+    };
+
     this.init = function () {
         createMap();
+        this.initCooldown(1000);
     };
+
+    this.initCooldown = function (delay) {
+        setInterval(function() {
+            heatmap.dissapate();
+            heatmap.update();
+        }, delay);
+    }
 };

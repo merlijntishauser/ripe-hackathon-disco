@@ -9,8 +9,9 @@ L.TileLayer.WebGLHeatMap = L.Class.extend({
     options: {
         size: 30000, // in meters
         opacity: 1,
-	gradientTexture: false,
-	alphaRange: 1
+		gradientTexture: false,
+		alphaRange: 1,
+		cooldownPerSecond: 0.00055
     },
     
     initialize: function (options) {
@@ -47,6 +48,17 @@ L.TileLayer.WebGLHeatMap = L.Class.extend({
 	map.on("zoomend", this._show, this);
 		
         this._plot();
+    },
+
+    dissapate: function() {
+    	var self = this;
+    	var opts = this.options;
+    	$.each(this.data, function(key, val) {
+    		self.data[key][2] = val[2]-opts.cooldownPerSecond;
+    		if(val[2] <= 0) {
+    			delete self.data[key];
+    		}
+    	});
     },
     
     onRemove: function (map) {
@@ -120,7 +132,7 @@ L.TileLayer.WebGLHeatMap = L.Class.extend({
     },
 
     addDataPoint: function (lat, lon, value) {
-        this.data.push( [ lat, lon, value / 100 ] );
+        this.data.push( [ lat, lon, value/100 ] );
     },
 	
     setData: function (dataset) {
